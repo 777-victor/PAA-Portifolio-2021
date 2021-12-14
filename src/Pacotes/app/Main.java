@@ -18,11 +18,22 @@ public class Main {
         System.out.println("Digite o caminho completo do arquivo: ");
         List<Ativo> ativos = csvHandler.handle(teclado.nextLine());
 
+        System.out.println("Todos os ativos: ");
+
         Portifolio portifolio = forcaBruta(ativos);
         System.out.println(portifolio);
 
+
         portifolio = guloso(ativos);
+        System.out.println("Melhor ativo");
         System.out.println(portifolio);
+
+        System.out.println("Ativos recomendados em ordem decrescente");
+        Portifolio recomendacao = recomendaAtivos(ativos);
+        System.out.println( recomendacao.toString() );
+        //System.out.println(recomendaAtivos(ativos));
+
+        //System.out.println();
 
     }
 
@@ -35,18 +46,12 @@ public class Main {
         for(int i = 0; i < nAtivos; i ++) {
             Portifolio portifolio = new Portifolio();
             portifolio.addAtivo(ativos.get(i));
-
-            for(int j = i; j < nAtivos; j ++){
-
-                if(portifolio.getRiscoRetorno() < riscoRetorno){
-                    riscoRetorno = portifolio.getRiscoRetorno();
-                    melhorPortifolio = portifolio;
-                }else{
-                    ativosArriscados.add(ativos.get(i));
-                }
-
+            if(portifolio.getRiscoRetorno() < riscoRetorno){
+                riscoRetorno = portifolio.getRiscoRetorno();
+                melhorPortifolio = portifolio;
+            }else{
+                ativosArriscados.add(ativos.get(i));
             }
-
         }
 
         return  melhorPortifolio;
@@ -74,6 +79,33 @@ public class Main {
 
         return  melhorPortifolio;
 
+    }
+
+    private static Portifolio recomendaAtivos(List<Ativo> ativos){
+        Portifolio recomendacao = new Portifolio();
+        Integer nAtivos = ativos.size();
+
+        for(int i = 0; i < nAtivos; i ++) {
+            Portifolio aux = new Portifolio();
+            aux.addAtivo(ativos.get(i));
+            for(int j = i + 1; j < nAtivos ; j++) {
+                Portifolio p = new Portifolio();
+                p.addAtivo(ativos.get(j));
+                 if(p.getRiscoRetorno() < aux.getRiscoRetorno()){
+                     ativos.remove(i);
+                     ativos.add(i, p.getAtivos().get(0));
+                     ativos.remove(j);
+                     ativos.add(j, aux.getAtivos().get(0));
+                     aux = new Portifolio();
+                     aux.setAtivos(p.getAtivos());
+                 }
+                 p = null;
+            }
+            aux = null;
+        }
+        recomendacao.setAtivos(ativos);
+
+        return  recomendacao;
     }
 
 

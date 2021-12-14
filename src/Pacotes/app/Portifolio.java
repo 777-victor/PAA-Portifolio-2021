@@ -21,10 +21,12 @@ public class Portifolio {
     public void setAtivos(List<Ativo> ativos) {
         this.ativos = ativos;
         this.calculaPatrimonioTotal();
+        this.getRiscoRetorno();
     }
     public void addAtivo(Ativo ativo) {
         this.ativos.add(ativo);
         this.calculaPatrimonioTotal();
+        this.getRiscoRetorno();
     }
 
     public double getRisco(){
@@ -58,7 +60,8 @@ public class Portifolio {
     }
 
     public double getRiscoRetorno(){
-        return this.getRisco()/this.getRetorno();
+        riscoRetorno = this.getRisco() / this.getRetorno();
+        return riscoRetorno;
     }
 
     @Override
